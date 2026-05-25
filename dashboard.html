@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FitAI — личный кабинет с персональным планом тренировок и питания.">
+  <title>FitAI — Личный кабинет</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-page">
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">F</span>
+        Fit<span class="logo__accent">AI</span>
+      </a>
+      <div class="nav__links" style="display:flex;">
+        <a href="index.html">Главная</a>
+        <a href="quiz.html">Пройти тест заново</a>
+        <button type="button" class="btn btn--outline" id="togglePremium" style="padding:0.5rem 1rem;font-size:0.85rem;">Тест Premium (Демо) (Тест логики)</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="dashboard-header">
+    <div class="container">
+      <div class="dashboard-header__top">
+        <div>
+          <h1>Ваш план от FitAI</h1>
+          <p class="dashboard-header__meta" id="planSubtitle">Персональная программа под ваши цели</p>
+          <div class="profile-chips" id="profileChips" style="margin-top:1rem;"></div>
+        </div>
+        <div id="premiumBadgeArea"></div>
+      </div>
+
+      <div class="premium-upsell" id="premiumUpsell" data-free-only>
+        <p><strong>Перейдите на Premium</strong> — уберите всю рекламу и тренируйтесь без отвлекающей рекламы.</p>
+        <button type="button" class="btn btn--primary" id="upgradeBtn">Go Premium — $9.99/месяц</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container dashboard__layout">
+    <main class="dashboard__main">
+      <div class="ad-slot ad-slot--banner" data-ad="dashboard-top" data-premium-hide>
+        <span>728 × 90 — баннер в кабинете</span>
+        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      </div>
+
+      <section class="dash-card">
+        <div class="dash-card__header">
+          <h2>🏋️ Программа тренировок <span class="day-badge" id="goalBadge">Сплит 4 недели</span></h2>
+        </div>
+        <div class="dash-card__body" id="workoutContent"></div>
+      </section>
+
+      <div class="ad-slot ad-slot--inline" data-ad="dashboard-mid" data-premium-hide>
+        <span>300 × 250 — средний блок</span>
+        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      </div>
+
+      <section class="dash-card">
+        <div class="dash-card__header">
+          <h2>🍽️ План питания</h2>
+        </div>
+        <div class="dash-card__body">
+          <div class="macro-grid" id="macroGrid"></div>
+          <div class="meal-list" id="mealList"></div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="dashboard__sidebar">
+      <div class="ad-slot ad-slot--sidebar" data-ad="dashboard-sidebar" data-premium-hide style="margin-bottom:1.5rem;">
+        <span>300 × 250 — боковой блок</span>
+        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card__header">
+          <h2>💡 Советы тренера</h2>
+        </div>
+        <div class="dash-card__body">
+          <ul class="tip-list" id="coachTips"></ul>
+        </div>
+      </div>
+
+      <div class="dash-card" style="margin-top:1.5rem;">
+        <div class="dash-card__header">
+          <h2>📅 Эта неделя</h2>
+        </div>
+        <div class="dash-card__body">
+          <div class="hero__progress">
+            <div class="hero__progress-label">
+              <span>Выполнение</span>
+              <span id="weekPercent">0%</span>
+            </div>
+            <div class="hero__progress-bar">
+              <div class="hero__progress-fill" id="weekProgress" style="width:0%;"></div>
+            </div>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin-top:1rem;" id="weekSummary"></p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (function () {
+      const PROFILE_KEY = 'fitai_profile';
+      const PREMIUM_KEY = 'fitai_premium';
+      const PAYMENT_LOG = 'Инициализация оплаты через Stripe/ЮKassa';
+
+      const GOAL_LABELS = {
+        gain: 'Набор массы',
+        shred: 'Сушка',
+        maintain: 'Поддержание формы'
+      };
+
+      const GOAL_BADGES = {
+        gain: 'Гипертрофия',
+        shred: 'Фаза сушки',
+        maintain: 'Сбалансированная программа'
+      };
+
+      const RESTRICTION_LABELS = {
+        none: 'нет',
+        vegetarian: 'вегетарианство',
+        vegan: 'веганство',
+        'gluten-free': 'без глютена',
+        'dairy-free': 'без лактозы',
+        keto: 'кето',
+        halal: 'халяль',
+        'nut-allergy': 'аллергия на орехи'
+      };
+
+      const WORKOUTS = {
+        gain: [
+          { day: 'Понедельник — жимовая', exercises: [
+            { name: 'Жим штанги лёжа', muscle: 'Грудь', sets: '4', reps: '8–10' },
+            { name: 'Жим гантелей сидя', muscle: 'Плечи', sets: '4', reps: '8–10' },
+            { name: 'Жим гантелей на наклонной', muscle: 'Грудь', sets: '3', reps: '10–12' },
+            { name: 'Махи гантелей в стороны', muscle: 'Плечи', sets: '3', reps: '12–15' },
+            { name: 'Отжимания на брусьях', muscle: 'Трицепс', sets: '3', reps: '10–12' }
+          ]},
+          { day: 'Среда — тяговая', exercises: [
+            { name: 'Становая тяга', muscle: 'Спина', sets: '4', reps: '5–6' },
+            { name: 'Подтягивания', muscle: 'Спина', sets: '4', reps: '8–10' },
+            { name: 'Тяга штанги в наклоне', muscle: 'Спина', sets: '3', reps: '8–10' },
+            { name: 'Разводка на блоке', muscle: 'Задняя дельта', sets: '3', reps: '15' },
+            { name: 'Подъём штанги на бицепс', muscle: 'Бицепс', sets: '3', reps: '10–12' }
+          ]},
+          { day: 'Пятница — ноги', exercises: [
+            { name: 'Приседания со штангой', muscle: 'Квадрицепс', sets: '4', reps: '8–10' },
+            { name: 'Румынская становая', muscle: 'Бицепс бедра', sets: '4', reps: '8–10' },
+            { name: 'Жим ногами', muscle: 'Квадрицепс', sets: '3', reps: '12–15' },
+            { name: 'Сгибание ног в тренажёре', muscle: 'Бицепс бедра', sets: '3', reps: '12' },
+            { name: 'Подъём на носки', muscle: 'Икры', sets: '4', reps: '15' }
+          ]}
+        ],
+        shred: [
+          { day: 'Понедельник — всё тело A', exercises: [
+            { name: 'Гоблет-присед', muscle: 'Ноги', sets: '3', reps: '15' },
+            { name: 'Жим гантелей лёжа', muscle: 'Грудь', sets: '3', reps: '12' },
+            { name: 'Махи гирей', muscle: 'Задняя цепь', sets: '4', reps: '20' },
+            { name: 'Канат', muscle: 'Кардио', sets: '4', reps: '30 сек' },
+            { name: 'Планка', muscle: 'Пресс', sets: '3', reps: '45 сек' }
+          ]},
+          { day: 'Среда — HIIT + пресс', exercises: [
+            { name: 'Бёрпи', muscle: 'Всё тело', sets: '5', reps: '12' },
+            { name: 'Прыжки на тумбу', muscle: 'Взрывная сила', sets: '4', reps: '10' },
+            { name: 'Скалолаз', muscle: 'Пресс', sets: '4', reps: '30 сек' },
+            { name: 'Гребной тренажёр', muscle: 'Кардио', sets: '1', reps: '15 мин' },
+            { name: 'Подъём ног в висе', muscle: 'Пресс', sets: '3', reps: '15' }
+          ]},
+          { day: 'Пятница — всё тело B', exercises: [
+            { name: 'Выпады с шагом', muscle: 'Ноги', sets: '3', reps: '20' },
+            { name: 'Тяга верхнего блока', muscle: 'Спина', sets: '3', reps: '12' },
+            { name: 'Жим гантелей сидя', muscle: 'Плечи', sets: '3', reps: '10' },
+            { name: 'Толкание саней', muscle: 'Выносливость', sets: '5', reps: '20 м' },
+            { name: 'Скакалка', muscle: 'Кардио', sets: '1', reps: '10 мин' }
+          ]}
+        ],
+        maintain: [
+          { day: 'Понедельник — верх', exercises: [
+            { name: 'Отжимания', muscle: 'Грудь', sets: '3', reps: '12–15' },
+            { name: 'Тяга гантели в наклоне', muscle: 'Спина', sets: '3', reps: '12' },
+            { name: 'Жим гантелей сидя', muscle: 'Плечи', sets: '3', reps: '10' },
+            { name: 'Сгибание на бицепс', muscle: 'Руки', sets: '2', reps: '12' }
+          ]},
+          { day: 'Среда — низ', exercises: [
+            { name: 'Приседания с весом тела', muscle: 'Квадрицепс', sets: '3', reps: '15' },
+            { name: 'Ягодичный мост', muscle: 'Ягодицы', sets: '3', reps: '15' },
+            { name: 'Зашагивания на платформу', muscle: 'Ноги', sets: '3', reps: '12/нога' },
+            { name: 'Подъём на носки', muscle: 'Икры', sets: '3', reps: '20' }
+          ]},
+          { day: 'Пятница — активное восстановление', exercises: [
+            { name: 'Лёгкий бег', muscle: 'Кардио', sets: '1', reps: '20 мин' },
+            { name: 'Йога-флоу', muscle: 'Мобильность', sets: '1', reps: '15 мин' },
+            { name: 'МФР роллом', muscle: 'Восстановление', sets: '1', reps: '10 мин' }
+          ]}
+        ]
+      };
+
+      const MACROS = {
+        gain: { calories: 2800, protein: 180, carbs: 320, fat: 85 },
+        shred: { calories: 1900, protein: 160, carbs: 150, fat: 65 },
+        maintain: { calories: 2300, protein: 140, carbs: 250, fat: 75 }
+      };
+
+      const MEALS = {
+        gain: [
+          { time: '07:00', name: 'Сытный завтрак', desc: 'Овсянка, протеин, банан, арахисовая паста', cals: 620 },
+          { time: '10:30', name: 'Протеиновый перекус', desc: 'Греческий йогурт, миндаль, ягоды', cals: 380 },
+          { time: '13:00', name: 'Обед для набора', desc: 'Куриная грудка, рис, брокколи', cals: 750 },
+          { time: '16:00', name: 'Перед тренировкой', desc: 'Протеин, овсянка, мёд', cals: 420 },
+          { time: '19:30', name: 'Ужин после тренировки', desc: 'Лосось, батат, спаржа', cals: 680 }
+        ],
+        shred: [
+          { time: '07:30', name: 'Лёгкий старт', desc: 'Белки яиц, шпинат, авокадо', cals: 320 },
+          { time: '12:00', name: 'Белковый обед', desc: 'Индейка на гриле, салат, оливковое масло', cals: 450 },
+          { time: '15:00', name: 'Лёгкий перекус', desc: 'Творог, огурец', cals: 180 },
+          { time: '18:30', name: 'После тренировки', desc: 'Белая рыба, овощи на пару', cals: 380 },
+          { time: '20:30', name: 'Вечерняя тарелка', desc: 'Тофу-стир-фрай, минимум масла', cals: 350 }
+        ],
+        maintain: [
+          { time: '08:00', name: 'Сбалансированный завтрак', desc: 'Яйца, тост, фрукты', cals: 480 },
+          { time: '12:30', name: 'Обед', desc: 'Постная говядина, киноа, овощи', cals: 580 },
+          { time: '15:30', name: 'Полдник', desc: 'Хумус, крекеры, морковь', cals: 290 },
+          { time: '19:00', name: 'Ужин', desc: 'Курица стир-фрай, бурый рис', cals: 620 }
+        ]
+      };
+
+      const TIPS = {
+        gain: [
+          'Стремитесь к 1,6–2,2 г белка на кг веса в сутки.',
+          'Прогрессия нагрузки: добавляйте вес или повторения каждые 1–2 недели.',
+          'Сон 7–9 часов — мышцы растут во время восстановления, а не в зале.'
+        ],
+        shred: [
+          'Держите белок высоким, чтобы сохранить мышечную массу в дефиците.',
+          'NEAT важен: 8–10 тысяч шагов в дни отдыха.',
+          'Пейте воду — жажда часто маскируется под голод на сушке.'
+        ],
+        maintain: [
+          'Регулярность важнее интенсивности для долгосрочного результата.',
+          'Смотрите на средние показатели за неделю, а не на вес каждый день.',
+          'Разгрузочная неделя каждые 4–6 недель помогает избежать выгорания.'
+        ]
+      };
+
+      function pluralRu(n, one, few, many) {
+        const num = parseInt(n, 10);
+        if (isNaN(num)) return many;
+        const mod10 = num % 10;
+        const mod100 = num % 100;
+        if (mod100 >= 11 && mod100 <= 14) return many;
+        if (mod10 === 1) return one;
+        if (mod10 >= 2 && mod10 <= 4) return few;
+        return many;
+      }
+
+      function formatSets(sets) {
+        const n = parseInt(sets, 10);
+        if (!isNaN(n)) {
+          return n + ' ' + pluralRu(n, 'подход', 'подхода', 'подходов');
+        }
+        return sets + ' подход';
+      }
+
+      function formatReps(reps) {
+        if (/мин|сек|м/i.test(reps)) return reps;
+        if (/^\d+([–-]\d+)?$/.test(reps.replace(/\s/g, ''))) {
+          const parts = reps.split(/[–-]/);
+          if (parts.length === 2) {
+            const a = parseInt(parts[0], 10);
+            const b = parseInt(parts[1], 10);
+            if (!isNaN(a) && !isNaN(b)) {
+              return a + '–' + b + ' ' + pluralRu(b, 'повторение', 'повторения', 'повторений');
+            }
+          }
+          const n = parseInt(reps, 10);
+          if (!isNaN(n)) {
+            return n + ' ' + pluralRu(n, 'повторение', 'повторения', 'повторений');
+          }
+        }
+        if (reps.indexOf('/') >= 0) return reps + ' повторений';
+        return reps + ' повторений';
+      }
+
+      /**
+       * Читает профиль пользователя из LocalStorage (записан на quiz.html).
+       */
+      function loadUserProfile() {
+        try {
+          const raw = localStorage.getItem(PROFILE_KEY);
+          if (!raw) return null;
+          const profile = JSON.parse(raw);
+          if (!profile || !profile.gender || !profile.age || !profile.weight || !profile.goal) {
+            return null;
+          }
+          return profile;
+        } catch (e) {
+          console.warn('[FitAI] Не удалось прочитать профиль из LocalStorage:', e);
+          return null;
+        }
+      }
+
+      function getProfile() {
+        return loadUserProfile();
+      }
+
+      /**
+       * Заглушка checkout — сюда позже подключатся Stripe / ЮKassa.
+       */
+      function initPaymentCheckout(profile) {
+        console.log(PAYMENT_LOG);
+        console.log('[FitAI] Данные для чекаут-сессии:', {
+          plan: 'premium_monthly',
+          priceUsd: 9.99,
+          profile: profile
+        });
+      }
+
+      function isPremium() {
+        return localStorage.getItem(PREMIUM_KEY) === 'true';
+      }
+
+      function applyPremiumUI() {
+        const premium = isPremium();
+
+        document.querySelectorAll('[data-premium-hide]').forEach(function (el) {
+          el.classList.toggle('ad-slot--hidden', premium);
+        });
+
+        document.querySelectorAll('[data-free-only]').forEach(function (el) {
+          el.classList.toggle('is-hidden', premium);
+        });
+
+        const badgeArea = document.getElementById('premiumBadgeArea');
+        if (premium) {
+          badgeArea.innerHTML = '<span class="premium-badge">★ Premium активен</span>';
+        } else {
+          badgeArea.innerHTML = '';
+        }
+      }
+
+      function calcMacros(profile) {
+        const base = MACROS[profile.goal] || MACROS.maintain;
+        const factor = profile.weight / 75;
+        return {
+          calories: Math.round(base.calories * factor),
+          protein: Math.round(base.protein * factor),
+          carbs: Math.round(base.carbs * factor),
+          fat: Math.round(base.fat * factor)
+        };
+      }
+
+      function adjustMealsForRestrictions(meals, restrictions) {
+        if (!restrictions || restrictions.includes('none')) return meals;
+        return meals.map(function (m) {
+          let desc = m.desc;
+          let name = m.name;
+          if (restrictions.includes('vegan') || restrictions.includes('vegetarian')) {
+            desc = desc
+              .replace(/куриц|индейк|говядин|лосос|рыб|протеин|яйц/gi, function () {
+                return restrictions.includes('vegan') ? 'растительный белок' : 'тофу/темпе';
+              });
+            name = name.replace(/Курин|Индейк|говядин|Лосось/gi, 'Растительное');
+          }
+          if (restrictions.includes('dairy-free')) {
+            desc = desc.replace(/йогурт|творог|сыр|протеин/gi, 'безлактозная альтернатива');
+          }
+          if (restrictions.includes('gluten-free')) {
+            desc = desc.replace(/овсянк|тост|крекер/gi, function (w) { return 'безглютеновый ' + w; });
+          }
+          return { time: m.time, name: name, desc: desc, cals: m.cals };
+        });
+      }
+
+      function renderWorkout(goal) {
+        const days = WORKOUTS[goal] || WORKOUTS.maintain;
+        const container = document.getElementById('workoutContent');
+        container.innerHTML = days.map(function (dayBlock) {
+          const rows = dayBlock.exercises.map(function (ex, i) {
+            return '<div class="exercise-row">' +
+              '<span class="exercise-row__num">' + (i + 1) + '</span>' +
+              '<div><div class="exercise-row__name">' + ex.name + '</div><div class="exercise-row__muscle">' + ex.muscle + '</div></div>' +
+              '<span class="exercise-row__sets">' + formatSets(ex.sets) + '</span>' +
+              '<span class="exercise-row__reps">' + formatReps(ex.reps) + '</span>' +
+              '</div>';
+          }).join('');
+          return '<div class="workout-day"><h3 class="workout-day__title">' + dayBlock.day + '</h3>' + rows + '</div>';
+        }).join('');
+      }
+
+      function renderMacros(macros) {
+        document.getElementById('macroGrid').innerHTML =
+          '<div class="macro-card"><div class="macro-card__value">' + macros.calories + '</div><div class="macro-card__label">Калории</div></div>' +
+          '<div class="macro-card"><div class="macro-card__value">' + macros.protein + ' г</div><div class="macro-card__label">Белки</div></div>' +
+          '<div class="macro-card"><div class="macro-card__value">' + macros.carbs + ' г</div><div class="macro-card__label">Углеводы</div></div>' +
+          '<div class="macro-card"><div class="macro-card__value">' + macros.fat + ' г</div><div class="macro-card__label">Жиры</div></div>';
+      }
+
+      function renderMeals(meals) {
+        document.getElementById('mealList').innerHTML = meals.map(function (m) {
+          return '<div class="meal-item">' +
+            '<span class="meal-item__time">' + m.time + '</span>' +
+            '<div class="meal-item__info"><h4>' + m.name + '</h4><p>' + m.desc + '</p></div>' +
+            '<span class="meal-item__cals">' + m.cals + ' ккал</span>' +
+            '</div>';
+        }).join('');
+      }
+
+      function renderTips(goal) {
+        const tips = TIPS[goal] || TIPS.maintain;
+        document.getElementById('coachTips').innerHTML = tips.map(function (t) {
+          return '<li>' + t + '</li>';
+        }).join('');
+      }
+
+      function formatRestrictions(restrictions) {
+        return (restrictions || ['none']).map(function (r) {
+          return RESTRICTION_LABELS[r] || r;
+        }).join(', ');
+      }
+
+      function renderProfile(profile) {
+        const genderLabel = { male: 'Мужской', female: 'Женский', other: 'Не указан' }[profile.gender] || profile.gender;
+
+        document.getElementById('profileChips').innerHTML =
+          '<span class="profile-chip"><span>' + genderLabel + '</span></span>' +
+          '<span class="profile-chip">Возраст: <span>' + profile.age + '</span></span>' +
+          '<span class="profile-chip">Вес: <span>' + profile.weight + ' кг</span></span>' +
+          '<span class="profile-chip">Цель: <span>' + (GOAL_LABELS[profile.goal] || profile.goal) + '</span></span>' +
+          '<span class="profile-chip">Питание: <span>' + formatRestrictions(profile.restrictions) + '</span></span>';
+
+        document.getElementById('planSubtitle').textContent =
+          '4-недельная программа под цель: «' + (GOAL_LABELS[profile.goal] || 'ваши цели') + '»';
+
+        document.getElementById('goalBadge').textContent = GOAL_BADGES[profile.goal] || 'Индивидуальный сплит';
+
+        const pct = 12 + (profile.age % 20);
+        document.getElementById('weekPercent').textContent = pct + '%';
+        document.getElementById('weekProgress').style.width = pct + '%';
+
+        const remaining = 3 - Math.floor(pct / 15);
+        const sessionWord = pluralRu(remaining, 'тренировка', 'тренировки', 'тренировок');
+        document.getElementById('weekSummary').textContent =
+          'Неделя 1 из 4 · осталось ' + remaining + ' ' + sessionWord + ' на этой неделе';
+      }
+
+      function init() {
+        const profile = loadUserProfile();
+
+        if (!profile) {
+          window.location.href = 'quiz.html';
+          return;
+        }
+
+        const goal = profile.goal || 'maintain';
+        renderProfile(profile);
+        renderWorkout(goal);
+        renderMacros(calcMacros(profile));
+        renderMeals(adjustMealsForRestrictions(MEALS[goal] || MEALS.maintain, profile.restrictions));
+        renderTips(goal);
+        applyPremiumUI();
+      }
+
+      document.getElementById('upgradeBtn')?.addEventListener('click', function () {
+        const profile = loadUserProfile();
+        initPaymentCheckout(profile);
+      });
+
+      document.getElementById('togglePremium')?.addEventListener('click', function () {
+        localStorage.setItem(PREMIUM_KEY, isPremium() ? 'false' : 'true');
+        applyPremiumUI();
+      });
+
+      init();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FitAI — персональный ИИ-тренер. Индивидуальные тренировки, питание и реальные результаты.">
+  <title>FitAI — ИИ фитнес-тренер</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">F</span>
+        Fit<span class="logo__accent">AI</span>
+      </a>
+      <button class="nav__toggle" aria-label="Открыть меню" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav__links" id="navLinks">
+        <a href="#features">Возможности</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="quiz.html">Пройти тест</a>
+        <a href="dashboard.html" class="btn btn--primary">Личный кабинет</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="ad-slot ad-slot--banner" data-ad="top-banner" data-premium-hide>
+        <span>728 × 90 — верхний баннер</span>
+        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      </div>
+
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__badge">ИИ-тренировки · Уже доступно</div>
+          <h1 class="hero__title">
+            Тренируйся умнее.
+            <span>Не усерднее.</span>
+          </h1>
+          <p class="hero__subtitle">
+            FitAI создаёт персональные программы тренировок и питания под ваше тело, цели и образ жизни — меньше чем за 60 секунд.
+          </p>
+          <div class="hero__actions">
+            <a href="quiz.html" class="btn btn--primary btn--lg">Создать план — Бесплатно</a>
+            <a href="#pricing" class="btn btn--outline btn--lg">Смотреть тарифы</a>
+          </div>
+          <div class="hero__stats">
+            <div class="hero__stat">
+              <strong>50K+</strong>
+              <span>Планов создано</span>
+            </div>
+            <div class="hero__stat">
+              <strong>4.9★</strong>
+              <span>Оценка пользователей</span>
+            </div>
+            <div class="hero__stat">
+              <strong>60 сек</strong>
+              <span>До вашего плана</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__visual">
+          <div class="hero__card">
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.1em;">Превью на сегодня</p>
+            <div class="hero__workout-item">
+              <div class="hero__workout-icon">🏋️</div>
+              <div class="hero__workout-info">
+                <h4>Жим штанги лёжа</h4>
+                <p>Грудь · 4 × 8–10</p>
+              </div>
+            </div>
+            <div class="hero__workout-item">
+              <div class="hero__workout-icon">💪</div>
+              <div class="hero__workout-info">
+                <h4>Разводка гантелей на наклонной</h4>
+                <p>Грудь · 3 × 12</p>
+              </div>
+            </div>
+            <div class="hero__workout-item">
+              <div class="hero__workout-icon">🔥</div>
+              <div class="hero__workout-info">
+                <h4>Разгибание на блоке</h4>
+                <p>Трицепс · 3 × 15</p>
+              </div>
+            </div>
+            <div class="hero__progress">
+              <div class="hero__progress-label">
+                <span>Цель недели</span>
+                <span>78%</span>
+              </div>
+              <div class="hero__progress-bar">
+                <div class="hero__progress-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__label">Почему FitAI</p>
+        <h2 class="section__title">Всё для вашей трансформации</h2>
+        <p class="section__desc">Научный подход и передовой ИИ — программа под ваше тело, а не шаблон из интернета.</p>
+      </div>
+
+      <div class="features__grid">
+        <article class="feature-card">
+          <div class="feature-card__icon">🎯</div>
+          <h3>Программы под цель</h3>
+          <p>Набор массы, сушка или поддержка формы — каждый подход и макрос рассчитаны под вашу задачу.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card__icon">🍽️</div>
+          <h3>Умное питание</h3>
+          <p>Время приёмов пищи, БЖУ и ограничения в рационе — больше не нужно гадать, что есть после тренировки.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card__icon">📊</div>
+          <h3>Отслеживание прогресса</h3>
+          <p>Наглядный кабинет: объём за неделю, калории и серии тренировок — держите себя в тонусе без лишних усилий.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card__icon">⚡</div>
+          <h3>Мгновенная генерация</h3>
+          <p>Ответьте на 5 вопросов — получите сплит на 4 недели и меню на каждый день меньше чем за минуту.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card__icon">🔄</div>
+          <h3>Адаптация плана</h3>
+          <p>Программа меняется вместе с вами: замена упражнений, нагрузка и пересчёт макросов в один клик.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-card__icon">📱</div>
+          <h3>Удобно на телефоне</h3>
+          <p>Берите план в зал: чёткая вёрстка на любом экране — от смартфона до большого монитора.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="ad-slot ad-slot--inline" data-ad="mid-content" data-premium-hide>
+      <span>Адаптивный рекламный блок</span>
+      <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+    </div>
+  </div>
+
+  <section class="section pricing" id="pricing">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__label">Простые тарифы</p>
+        <h2 class="section__title">Начните бесплатно. Premium — когда будете готовы.</h2>
+        <p class="section__desc">Полные ИИ-планы без оплаты — переходите на Premium в любой момент, чтобы убрать рекламу и сосредоточиться на тренировках.</p>
+      </div>
+
+      <div class="pricing__grid">
+        <article class="pricing-card">
+          <p class="pricing-card__tier">Бесплатно с рекламой</p>
+          <p class="pricing-card__price">0 ₽ <span>/ навсегда</span></p>
+          <p class="pricing-card__tagline">Полные ИИ-планы с рекламой — идеально, чтобы начать.</p>
+          <ul class="pricing-card__features">
+            <li>Полная программа тренировок от ИИ</li>
+            <li>Персональный план питания</li>
+            <li>Анкета из 5 шагов</li>
+            <li>Доступ в личный кабинет</li>
+            <li class="is-muted">Без рекламы</li>
+            <li class="is-muted">Приоритетная перегенерация плана</li>
+          </ul>
+          <a href="quiz.html" class="btn btn--ghost btn--block" data-plan="free">Начать бесплатно</a>
+        </article>
+
+        <article class="pricing-card pricing-card--featured">
+          <p class="pricing-card__tier">Premium</p>
+          <p class="pricing-card__price">590 ₽ <span>/ месяц</span></p>
+          <p class="pricing-card__tagline">Без рекламы. Только тренировки. Максимальный фокус.</p>
+          <ul class="pricing-card__features">
+            <li>Всё из бесплатного тарифа, плюс:</li>
+            <li>Никаких баннеров и боковой рекламы</li>
+            <li>Чистый кабинет без отвлекающей рекламы</li>
+            <li>Приоритетная перегенерация ИИ</li>
+            <li>Экспорт плана в PDF</li>
+            <li>Ранний доступ к новым функциям</li>
+          </ul>
+          <button type="button" class="btn btn--primary btn--block" id="upgradePremium">Перейти на Premium</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">F</span>
+        Fit<span class="logo__accent">AI</span>
+      </a>
+      <p class="footer__copy">© 2026 FitAI. Все права защищены.</p>
+      <div class="footer__links">
+        <a href="#features">Возможности</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="quiz.html">Тест</a>
+        <a href="dashboard.html">Кабинет</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="ad-slot ad-slot--banner" data-ad="footer-banner" data-premium-hide style="margin-top:2rem;">
+        <span>728 × 90 — нижний баннер</span>
+        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const PREMIUM_KEY = 'fitai_premium';
+
+      function applyPremiumState() {
+        const isPremium = localStorage.getItem(PREMIUM_KEY) === 'true';
+        document.querySelectorAll('[data-premium-hide]').forEach(function (el) {
+          el.classList.toggle('ad-slot--hidden', isPremium);
+        });
+      }
+
+      document.getElementById('navToggle')?.addEventListener('click', function () {
+        document.getElementById('navLinks').classList.toggle('is-open');
+      });
+
+      document.getElementById('upgradePremium')?.addEventListener('click', function () {
+        localStorage.setItem(PREMIUM_KEY, 'true');
+        applyPremiumState();
+        alert('Добро пожаловать в FitAI Premium! Реклама скрыта во всём приложении.');
+      });
+
+      document.querySelectorAll('[data-plan="free"]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          localStorage.setItem(PREMIUM_KEY, 'false');
+        });
+      });
+
+      applyPremiumState();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FitAI — анкета для персонального ИИ-плана тренировок и питания.">
+  <title>FitAI — Пройти тест</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="quiz-page">
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">F</span>
+        Fit<span class="logo__accent">AI</span>
+      </a>
+      <div class="nav__links" style="display:flex;">
+        <a href="index.html">Главная</a>
+        <a href="dashboard.html">Личный кабинет</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="quiz">
+    <div class="container quiz__wrapper">
+      <div class="quiz__progress">
+        <div class="quiz__progress-steps" id="stepDots" aria-hidden="true"></div>
+        <div class="quiz__progress-bar">
+          <div class="quiz__progress-fill" id="progressFill" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <form class="quiz__card" id="quizForm" novalidate>
+        <div class="quiz__step is-active" data-step="1">
+          <h2 class="quiz__question">Укажите пол</h2>
+          <p class="quiz__hint">Нужно для точного расчёта метаболизма и нагрузки.</p>
+          <div class="quiz__options quiz__options--grid-2">
+            <button type="button" class="quiz__option" data-field="gender" data-value="male">
+              <span class="quiz__option-icon">♂️</span>
+              <span class="quiz__option-text">
+                <strong>Мужской</strong>
+                <span>Стандартный мужской профиль</span>
+              </span>
+            </button>
+            <button type="button" class="quiz__option" data-field="gender" data-value="female">
+              <span class="quiz__option-icon">♀️</span>
+              <span class="quiz__option-text">
+                <strong>Женский</strong>
+                <span>Стандартный женский профиль</span>
+              </span>
+            </button>
+            <button type="button" class="quiz__option" data-field="gender" data-value="other">
+              <span class="quiz__option-icon">⚧️</span>
+              <span class="quiz__option-text">
+                <strong>Другой / не указывать</strong>
+                <span>Нейтральный базовый профиль</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="quiz__step" data-step="2">
+          <h2 class="quiz__question">Сколько вам лет?</h2>
+          <p class="quiz__hint">Возраст влияет на восстановление и суточную калорийность.</p>
+          <div class="quiz__input-group">
+            <label for="age">Возраст (лет)</label>
+            <input type="number" id="age" class="quiz__input" name="age" min="14" max="99" placeholder="например, 28" required>
+          </div>
+        </div>
+
+        <div class="quiz__step" data-step="3">
+          <h2 class="quiz__question">Какой у вас текущий вес?</h2>
+          <p class="quiz__hint">Используется для расчёта БЖУ и объёма тренировок.</p>
+          <div class="quiz__input-group">
+            <label for="weight">Вес (кг)</label>
+            <input type="number" id="weight" class="quiz__input" name="weight" min="30" max="300" step="0.1" placeholder="например, 75" required>
+          </div>
+        </div>
+
+        <div class="quiz__step" data-step="4">
+          <h2 class="quiz__question">Какая у вас главная цель?</h2>
+          <p class="quiz__hint">От этого зависит вся структура программы.</p>
+          <div class="quiz__options">
+            <button type="button" class="quiz__option" data-field="goal" data-value="gain">
+              <span class="quiz__option-icon">💪</span>
+              <span class="quiz__option-text">
+                <strong>Набор массы</strong>
+                <span>Гипертрофия · профицит калорий</span>
+              </span>
+            </button>
+            <button type="button" class="quiz__option" data-field="goal" data-value="shred">
+              <span class="quiz__option-icon">🔥</span>
+              <span class="quiz__option-text">
+                <strong>Сушка</strong>
+                <span>Сжигание жира · высокая интенсивность · дефицит</span>
+              </span>
+            </button>
+            <button type="button" class="quiz__option" data-field="goal" data-value="maintain">
+              <span class="quiz__option-icon">⚖️</span>
+              <span class="quiz__option-text">
+                <strong>Поддержание формы</strong>
+                <span>Сбалансированные тренировки · поддерживающие калории</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="quiz__step" data-step="5">
+          <h2 class="quiz__question">Есть ли ограничения в питании?</h2>
+          <p class="quiz__hint">Выберите всё подходящее или пропустите, если ограничений нет.</p>
+          <div class="quiz__tags" id="dietTags">
+            <button type="button" class="quiz__tag" data-restriction="none">Нет</button>
+            <button type="button" class="quiz__tag" data-restriction="vegetarian">Вегетарианство</button>
+            <button type="button" class="quiz__tag" data-restriction="vegan">Веганство</button>
+            <button type="button" class="quiz__tag" data-restriction="gluten-free">Без глютена</button>
+            <button type="button" class="quiz__tag" data-restriction="dairy-free">Без лактозы</button>
+            <button type="button" class="quiz__tag" data-restriction="keto">Кето</button>
+            <button type="button" class="quiz__tag" data-restriction="halal">Халяль</button>
+            <button type="button" class="quiz__tag" data-restriction="nut-allergy">Аллергия на орехи</button>
+          </div>
+        </div>
+
+        <div class="quiz__nav">
+          <button type="button" class="btn btn--ghost" id="btnBack" disabled>← Назад</button>
+          <button type="button" class="btn btn--primary" id="btnNext">Далее →</button>
+        </div>
+      </form>
+
+      <div class="ad-slot ad-slot--inline" data-ad="quiz-bottom" data-premium-hide style="margin-top:1.5rem;">
+        <span>320 × 100 — мобильный баннер</span>
+        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const TOTAL_STEPS = 5;
+      const PROFILE_KEY = 'fitai_profile';
+      const PREMIUM_KEY = 'fitai_premium';
+
+      /** @typedef {{ gender: string, age: number, weight: number, goal: string, restrictions: string[], savedAt: string }} FitAIProfile */
+
+      const state = {
+        gender: null,
+        age: null,
+        weight: null,
+        goal: null,
+        restrictions: []
+      };
+
+      let currentStep = 1;
+      const steps = document.querySelectorAll('.quiz__step');
+      const progressFill = document.getElementById('progressFill');
+      const stepDots = document.getElementById('stepDots');
+      const btnBack = document.getElementById('btnBack');
+      const btnNext = document.getElementById('btnNext');
+
+      function initDots() {
+        stepDots.innerHTML = '';
+        for (let i = 1; i <= TOTAL_STEPS; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'quiz__step-dot' + (i === 1 ? ' is-active' : '');
+          dot.dataset.step = i;
+          stepDots.appendChild(dot);
+        }
+      }
+
+      function updateUI() {
+        steps.forEach(function (s) {
+          s.classList.toggle('is-active', parseInt(s.dataset.step, 10) === currentStep);
+        });
+
+        document.querySelectorAll('.quiz__step-dot').forEach(function (dot) {
+          const n = parseInt(dot.dataset.step, 10);
+          dot.classList.remove('is-active', 'is-done');
+          if (n < currentStep) dot.classList.add('is-done');
+          if (n === currentStep) dot.classList.add('is-active');
+        });
+
+        progressFill.style.width = ((currentStep / TOTAL_STEPS) * 100) + '%';
+        btnBack.disabled = currentStep === 1;
+        btnNext.textContent = currentStep === TOTAL_STEPS ? 'Показать план' : 'Далее →';
+      }
+
+      function validateStep() {
+        switch (currentStep) {
+          case 1:
+            if (!state.gender) { alert('Пожалуйста, укажите пол.'); return false; }
+            return true;
+          case 2: {
+            const age = parseInt(document.getElementById('age').value, 10);
+            if (!age || age < 14 || age > 99) { alert('Введите корректный возраст (14–99 лет).'); return false; }
+            state.age = age;
+            return true;
+          }
+          case 3: {
+            const weight = parseFloat(document.getElementById('weight').value);
+            if (!weight || weight < 30 || weight > 300) { alert('Введите корректный вес (30–300 кг).'); return false; }
+            state.weight = weight;
+            return true;
+          }
+          case 4:
+            if (!state.goal) { alert('Пожалуйста, выберите цель тренировок.'); return false; }
+            return true;
+          case 5:
+            if (state.restrictions.length === 0) state.restrictions = ['none'];
+            return true;
+          default:
+            return true;
+        }
+      }
+
+      /**
+       * Сохраняет ответы анкеты в LocalStorage (ключ fitai_profile).
+       * Позже эти данные уйдут в API / промпт для реального ИИ.
+       */
+      function saveUserProfile() {
+        const profile = {
+          gender: state.gender,
+          age: state.age,
+          weight: state.weight,
+          goal: state.goal,
+          restrictions: state.restrictions.length ? state.restrictions : ['none'],
+          savedAt: new Date().toISOString()
+        };
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+        return profile;
+      }
+
+      function saveAndRedirect() {
+        saveUserProfile();
+        window.location.href = 'dashboard.html';
+      }
+
+      document.querySelectorAll('.quiz__option[data-field]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const field = btn.dataset.field;
+          const value = btn.dataset.value;
+          document.querySelectorAll('.quiz__option[data-field="' + field + '"]').forEach(function (b) {
+            b.classList.remove('is-selected');
+          });
+          btn.classList.add('is-selected');
+          state[field] = value;
+        });
+      });
+
+      document.querySelectorAll('.quiz__tag').forEach(function (tag) {
+        tag.addEventListener('click', function () {
+          const val = tag.dataset.restriction;
+          if (val === 'none') {
+            state.restrictions = ['none'];
+            document.querySelectorAll('.quiz__tag').forEach(function (t) { t.classList.remove('is-selected'); });
+            tag.classList.add('is-selected');
+            return;
+          }
+          document.querySelector('.quiz__tag[data-restriction="none"]')?.classList.remove('is-selected');
+          state.restrictions = state.restrictions.filter(function (r) { return r !== 'none'; });
+          const idx = state.restrictions.indexOf(val);
+          if (idx >= 0) {
+            state.restrictions.splice(idx, 1);
+            tag.classList.remove('is-selected');
+          } else {
+            state.restrictions.push(val);
+            tag.classList.add('is-selected');
+          }
+        });
+      });
+
+      btnNext.addEventListener('click', function () {
+        if (!validateStep()) return;
+        if (currentStep === TOTAL_STEPS) {
+          saveAndRedirect();
+          return;
+        }
+        currentStep++;
+        updateUI();
+      });
+
+      btnBack.addEventListener('click', function () {
+        if (currentStep > 1) {
+          currentStep--;
+          updateUI();
+        }
+      });
+
+      function applyPremiumState() {
+        const isPremium = localStorage.getItem(PREMIUM_KEY) === 'true';
+        document.querySelectorAll('[data-premium-hide]').forEach(function (el) {
+          el.classList.toggle('ad-slot--hidden', isPremium);
+        });
+      }
+
+      initDots();
+      updateUI();
+      applyPremiumState();
+    })();
+  </script>
+</body>
+</html>

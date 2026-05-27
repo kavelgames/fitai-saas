@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="status-badge" id="subscriptionStatus">Status: Free</div>
   <nav class="nav">
     <div class="container nav__inner">
       <a href="index.html" class="logo">
@@ -102,6 +103,33 @@
     </div>
   </header>
 
+  <section class="section benefits-section" id="benefits">
+    <div class="container">
+      <div class="section__header">
+        <p class="section__label">Преимущества</p>
+        <h2 class="section__title">Все, чтобы прогресс был предсказуемым</h2>
+        <p class="section__desc">FitAI объединяет ИИ-аналитику и практичный фитнес-подход, чтобы вы получали результат без хаоса.</p>
+      </div>
+      <div class="benefits-grid">
+        <article class="benefit-card">
+          <div class="benefit-card__icon">🧠</div>
+          <h3>Персональный план</h3>
+          <p>Тренировки и питание под вашу цель, уровень подготовки и ограничения в рационе.</p>
+        </article>
+        <article class="benefit-card">
+          <div class="benefit-card__icon">💬</div>
+          <h3>Поддержка 24/7</h3>
+          <p>Подсказки и корректировки доступны в любое время, чтобы вы не выпадали из режима.</p>
+        </article>
+        <article class="benefit-card">
+          <div class="benefit-card__icon">📈</div>
+          <h3>Результаты через 30 дней</h3>
+          <p>Еженедельный контроль прогресса и адаптация программы для стабильного роста формы.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="features">
     <div class="container">
       <div class="section__header">
@@ -188,9 +216,16 @@
             <li>Экспорт плана в PDF</li>
             <li>Ранний доступ к новым функциям</li>
           </ul>
-          <button type="button" class="btn btn--primary btn--block" id="upgradePremium">Перейти на Premium</button>
+          <button type="button" class="btn btn--primary btn--block paywall-btn" id="pay-button">Оформить Premium безопасно</button>
         </article>
       </div>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="container trust-strip__inner">
+      <h3>Почему нам доверяют</h3>
+      <p>Уже более 100+ атлетов используют FITAI, чтобы тренироваться системно и видеть реальный прогресс.</p>
     </div>
   </section>
 
@@ -217,34 +252,22 @@
     </div>
   </footer>
 
+  <script src="script.js"></script>
   <script>
     (function () {
-      const PREMIUM_KEY = 'fitai_premium';
-
-      function applyPremiumState() {
-        const isPremium = localStorage.getItem(PREMIUM_KEY) === 'true';
-        document.querySelectorAll('[data-premium-hide]').forEach(function (el) {
-          el.classList.toggle('ad-slot--hidden', isPremium);
-        });
-      }
-
       document.getElementById('navToggle')?.addEventListener('click', function () {
         document.getElementById('navLinks').classList.toggle('is-open');
       });
 
-      document.getElementById('upgradePremium')?.addEventListener('click', function () {
-        localStorage.setItem(PREMIUM_KEY, 'true');
-        applyPremiumState();
-        alert('Добро пожаловать в FitAI Premium! Реклама скрыта во всём приложении.');
+      document.getElementById('pay-button')?.addEventListener('click', function () {
+        window.FitAIAuth.makePayment();
       });
 
       document.querySelectorAll('[data-plan="free"]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          localStorage.setItem(PREMIUM_KEY, 'false');
+          window.FitAIAuth.setFreePlan();
         });
       });
-
-      applyPremiumState();
     })();
   </script>
 </body>

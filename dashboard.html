@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="dashboard-page">
+  <div class="status-badge" id="subscriptionStatus">Status: Free</div>
   <nav class="nav">
     <div class="container nav__inner">
       <a href="index.html" class="logo">
@@ -105,10 +106,12 @@
     </aside>
   </div>
 
+  <script src="script.js"></script>
   <script>
     (function () {
+      window.FitAIAuth.protectDashboard();
+
       const PROFILE_KEY = 'fitai_profile';
-      const PREMIUM_KEY = 'fitai_premium';
       const PAYMENT_LOG = 'Инициализация оплаты через Stripe/ЮKassa';
 
       const GOAL_LABELS = {
@@ -322,20 +325,10 @@
         });
       }
 
-      function isPremium() {
-        return localStorage.getItem(PREMIUM_KEY) === 'true';
-      }
-
       function applyPremiumUI() {
-        const premium = isPremium();
-
-        document.querySelectorAll('[data-premium-hide]').forEach(function (el) {
-          el.classList.toggle('ad-slot--hidden', premium);
-        });
-
-        document.querySelectorAll('[data-free-only]').forEach(function (el) {
-          el.classList.toggle('is-hidden', premium);
-        });
+        const premium = window.FitAIAuth.isPremium();
+        window.FitAIAuth.updateStatusBadge();
+        window.FitAIAuth.updatePremiumVisibility();
 
         const badgeArea = document.getElementById('premiumBadgeArea');
         if (premium) {
@@ -452,7 +445,6 @@
 
       function init() {
         const profile = loadUserProfile();
-
         if (!profile) {
           window.location.href = 'quiz.html';
           return;
@@ -470,10 +462,17 @@
       document.getElementById('upgradeBtn')?.addEventListener('click', function () {
         const profile = loadUserProfile();
         initPaymentCheckout(profile);
+        window.FitAIAuth.makePayment();
+        applyPremiumUI();
+        alert('Оплата прошла успешно. Вам открыт полный доступ к dashboard.');
       });
 
       document.getElementById('togglePremium')?.addEventListener('click', function () {
-        localStorage.setItem(PREMIUM_KEY, isPremium() ? 'false' : 'true');
+        if (window.FitAIAuth.isPremium()) {
+          window.FitAIAuth.setFreePlan();
+        } else {
+          window.FitAIAuth.makePayment();
+        }
         applyPremiumUI();
       });
 

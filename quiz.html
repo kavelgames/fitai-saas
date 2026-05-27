@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="quiz-page">
+  <div class="status-badge" id="subscriptionStatus">Status: Free</div>
   <nav class="nav">
     <div class="container nav__inner">
       <a href="index.html" class="logo">
@@ -137,7 +138,6 @@
     (function () {
       const TOTAL_STEPS = 5;
       const PROFILE_KEY = 'fitai_profile';
-      const PREMIUM_KEY = 'fitai_premium';
 
       /** @typedef {{ gender: string, age: number, weight: number, goal: string, restrictions: string[], savedAt: string }} FitAIProfile */
 
@@ -284,17 +284,10 @@
         }
       });
 
-      function applyPremiumState() {
-        const isPremium = localStorage.getItem(PREMIUM_KEY) === 'true';
-        document.querySelectorAll('[data-premium-hide]').forEach(function (el) {
-          el.classList.toggle('ad-slot--hidden', isPremium);
-        });
-      }
-
       initDots();
       updateUI();
-      applyPremiumState();
     })();
   </script>
+  <script src="script.js"></script>
 </body>
 </html>

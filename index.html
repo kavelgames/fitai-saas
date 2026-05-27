@@ -29,42 +29,45 @@
 
   <header class="hero">
     <div class="container">
-      <div class="ad-slot ad-slot--banner" data-ad="top-banner" data-premium-hide>
-        <span>728 × 90 — верхний баннер</span>
-        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
+      <div class="premium-welcome" id="premiumWelcome" aria-hidden="true">
+        <div>
+          <strong>Добро пожаловать обратно, Premium-атлет!</strong>
+          <p>Ваш доступ активен. Продолжайте прогресс с персональным AI-планом.</p>
+        </div>
+        <a href="dashboard.html" class="btn btn--primary">Открыть dashboard</a>
       </div>
 
       <div class="hero__grid">
-        <div class="hero__content">
-          <div class="hero__badge">ИИ-тренировки · Уже доступно</div>
+        <div class="hero__content" data-reveal>
+          <div class="hero__badge">AI-фитнес нового поколения</div>
           <h1 class="hero__title">
-            Тренируйся умнее.
-            <span>Не усерднее.</span>
+            Сильное тело по системе.
+            <span>Без хаоса и догадок.</span>
           </h1>
           <p class="hero__subtitle">
-            FitAI создаёт персональные программы тренировок и питания под ваше тело, цели и образ жизни — меньше чем за 60 секунд.
+            FitAI создает персональный план тренировок и питания под ваш уровень, цели и ритм жизни. Прозрачные шаги, измеримый прогресс и поддержка на каждом этапе.
           </p>
           <div class="hero__actions">
-            <a href="quiz.html" class="btn btn--primary btn--lg">Создать план — Бесплатно</a>
-            <a href="#pricing" class="btn btn--outline btn--lg">Смотреть тарифы</a>
+            <a href="#pricing" class="btn btn--primary btn--lg">Начать Premium сегодня</a>
+            <a href="quiz.html" class="btn btn--outline btn--lg">Пройти AI-оценку</a>
           </div>
           <div class="hero__stats">
             <div class="hero__stat">
               <strong>50K+</strong>
-              <span>Планов создано</span>
+              <span>Персональных планов</span>
             </div>
             <div class="hero__stat">
               <strong>4.9★</strong>
-              <span>Оценка пользователей</span>
+              <span>Средний рейтинг сервиса</span>
             </div>
             <div class="hero__stat">
-              <strong>60 сек</strong>
-              <span>До вашего плана</span>
+              <strong>30 дней</strong>
+              <span>До видимого результата</span>
             </div>
           </div>
         </div>
 
-        <div class="hero__visual">
+        <div class="hero__visual" data-reveal>
           <div class="hero__card">
             <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.1em;">Превью на сегодня</p>
             <div class="hero__workout-item">
@@ -104,7 +107,7 @@
   </header>
 
   <section class="section benefits-section" id="benefits">
-    <div class="container">
+    <div class="container" data-reveal>
       <div class="section__header">
         <p class="section__label">Преимущества</p>
         <h2 class="section__title">Все, чтобы прогресс был предсказуемым</h2>
@@ -131,61 +134,44 @@
   </section>
 
   <section class="section" id="features">
-    <div class="container">
+    <div class="container" data-reveal>
       <div class="section__header">
-        <p class="section__label">Почему FitAI</p>
-        <h2 class="section__title">Всё для вашей трансформации</h2>
-        <p class="section__desc">Научный подход и передовой ИИ — программа под ваше тело, а не шаблон из интернета.</p>
+        <p class="section__label">Почему выбирают FitAI</p>
+        <h2 class="section__title">Платформа, которая ведет к результату</h2>
+        <p class="section__desc">Только функциональность, которая реально помогает тренироваться стабильно и прогрессировать.</p>
       </div>
 
       <div class="features__grid">
         <article class="feature-card">
           <div class="feature-card__icon">🎯</div>
-          <h3>Программы под цель</h3>
-          <p>Набор массы, сушка или поддержка формы — каждый подход и макрос рассчитаны под вашу задачу.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-card__icon">🍽️</div>
-          <h3>Умное питание</h3>
-          <p>Время приёмов пищи, БЖУ и ограничения в рационе — больше не нужно гадать, что есть после тренировки.</p>
+          <h3>План под вашу цель</h3>
+          <p>Набор, сушка или поддержание — структура тренировок и питание подстроены именно под вашу задачу.</p>
         </article>
         <article class="feature-card">
           <div class="feature-card__icon">📊</div>
-          <h3>Отслеживание прогресса</h3>
-          <p>Наглядный кабинет: объём за неделю, калории и серии тренировок — держите себя в тонусе без лишних усилий.</p>
+          <h3>Контроль прогресса</h3>
+          <p>Отслеживайте динамику по нагрузке и питанию в одном кабинете без лишней рутины.</p>
         </article>
         <article class="feature-card">
           <div class="feature-card__icon">⚡</div>
-          <h3>Мгновенная генерация</h3>
-          <p>Ответьте на 5 вопросов — получите сплит на 4 недели и меню на каждый день меньше чем за минуту.</p>
+          <h3>Быстрый запуск</h3>
+          <p>Заполните короткий AI-тест и получите готовый план за минуту вместо недель поисков.</p>
         </article>
         <article class="feature-card">
           <div class="feature-card__icon">🔄</div>
-          <h3>Адаптация плана</h3>
-          <p>Программа меняется вместе с вами: замена упражнений, нагрузка и пересчёт макросов в один клик.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-card__icon">📱</div>
-          <h3>Удобно на телефоне</h3>
-          <p>Берите план в зал: чёткая вёрстка на любом экране — от смартфона до большого монитора.</p>
+          <h3>Гибкая адаптация</h3>
+          <p>Меняйте упражнения и интенсивность под восстановление, график и доступное оборудование.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <div class="container">
-    <div class="ad-slot ad-slot--inline" data-ad="mid-content" data-premium-hide>
-      <span>Адаптивный рекламный блок</span>
-      <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
-    </div>
-  </div>
-
   <section class="section pricing" id="pricing">
-    <div class="container">
+    <div class="container" data-reveal>
       <div class="section__header">
-        <p class="section__label">Простые тарифы</p>
-        <h2 class="section__title">Начните бесплатно. Premium — когда будете готовы.</h2>
-        <p class="section__desc">Полные ИИ-планы без оплаты — переходите на Premium в любой момент, чтобы убрать рекламу и сосредоточиться на тренировках.</p>
+        <p class="section__label">Тарифы</p>
+        <h2 class="section__title">Выберите формат, который ускорит ваш прогресс</h2>
+        <p class="section__desc">Стартуйте бесплатно или подключайте Premium, чтобы тренироваться в максимально чистом и сфокусированном интерфейсе.</p>
       </div>
 
       <div class="pricing__grid">
@@ -245,7 +231,7 @@
   </div>
 
   <section class="trust-strip">
-    <div class="container trust-strip__inner">
+    <div class="container trust-strip__inner" data-reveal>
       <h3>Почему нам доверяют</h3>
       <p>Уже более 100+ атлетов используют FITAI, чтобы тренироваться системно и видеть реальный прогресс.</p>
     </div>
@@ -266,12 +252,6 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="ad-slot ad-slot--banner" data-ad="footer-banner" data-premium-hide style="margin-top:2rem;">
-        <span>728 × 90 — нижний баннер</span>
-        <span class="ad-slot__provider">Google AdSense / Яндекс Директ</span>
-      </div>
-    </div>
   </footer>
 
   <script src="script.js"></script>

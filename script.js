@@ -62,13 +62,47 @@
       updateStatusBadge();
       updatePremiumVisibility();
       showToast("Успешно! Доступ открыт", "success");
-      setTimeout(function () {
-        window.location.href = "dashboard.html";
-      }, 450);
+      renderPremiumWelcome();
       return true;
     }
     showToast("Неверный код", "error");
     return false;
+  }
+
+  function renderPremiumWelcome() {
+    var box = document.getElementById("premiumWelcome");
+    if (!box) return;
+    var paid = hasPaid();
+    box.classList.toggle("is-visible", paid);
+    box.setAttribute("aria-hidden", paid ? "false" : "true");
+  }
+
+  function initScrollReveal() {
+    var targets = document.querySelectorAll("[data-reveal]");
+    if (!targets.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+      targets.forEach(function (el) {
+        el.classList.add("is-visible");
+      });
+      return;
+    }
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    targets.forEach(function (el) {
+      observer.observe(el);
+    });
   }
 
   function handlePaymentSuccessFromUrl() {
@@ -114,6 +148,8 @@
     showToast: showToast,
     completePaymentSuccess: completePaymentSuccess,
     activateCode: activateCode,
+    renderPremiumWelcome: renderPremiumWelcome,
+    initScrollReveal: initScrollReveal,
     handlePaymentSuccessFromUrl: handlePaymentSuccessFromUrl,
     initiatePayment: initiatePayment,
     makePayment: makePayment,
@@ -126,5 +162,7 @@
     protectDashboard();
     updateStatusBadge();
     updatePremiumVisibility();
+    renderPremiumWelcome();
+    initScrollReveal();
   });
 })();

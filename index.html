@@ -219,8 +219,30 @@
           <button type="button" class="btn btn--primary btn--block paywall-btn" id="pay-button">Оформить Premium безопасно</button>
         </article>
       </div>
+      <div class="payment-methods" aria-label="Поддерживаемые платежные системы">
+        <span class="payment-methods__label">Принимаем к оплате:</span>
+        <div class="payment-methods__list">
+          <span class="payment-chip">VISA</span>
+          <span class="payment-chip">Mastercard</span>
+          <span class="payment-chip">Apple Pay</span>
+        </div>
+      </div>
+      <div class="access-code-cta">
+        <button type="button" class="btn btn--ghost" id="openCodeModal">У меня есть код доступа</button>
+      </div>
+      <p class="payment-security-note">Безопасная оплата через ЮMoney</p>
     </div>
   </section>
+
+  <div class="modal-overlay" id="codeModal" aria-hidden="true">
+    <div class="code-modal" role="dialog" aria-modal="true" aria-labelledby="codeModalTitle">
+      <button type="button" class="code-modal__close" id="closeCodeModal" aria-label="Закрыть окно">×</button>
+      <h3 id="codeModalTitle">Активация кода доступа</h3>
+      <p>Введите промокод, чтобы открыть Premium-доступ без оплаты.</p>
+      <input type="text" id="accessCodeInput" class="code-modal__input" placeholder="Введите код, например FITAI2026" autocomplete="off">
+      <button type="button" class="btn btn--primary btn--block" id="activateCodeBtn">Активировать</button>
+    </div>
+  </div>
 
   <section class="trust-strip">
     <div class="container trust-strip__inner">
@@ -260,7 +282,45 @@
       });
 
       document.getElementById('pay-button')?.addEventListener('click', function () {
-        window.FitAIAuth.makePayment();
+        window.FitAIAuth.initiatePayment();
+      });
+
+      const codeModal = document.getElementById('codeModal');
+      const openCodeModalBtn = document.getElementById('openCodeModal');
+      const closeCodeModalBtn = document.getElementById('closeCodeModal');
+      const activateCodeBtn = document.getElementById('activateCodeBtn');
+      const accessCodeInput = document.getElementById('accessCodeInput');
+
+      function openCodeModal() {
+        codeModal.classList.add('is-open');
+        codeModal.setAttribute('aria-hidden', 'false');
+        setTimeout(function () {
+          accessCodeInput?.focus();
+        }, 60);
+      }
+
+      function closeCodeModal() {
+        codeModal.classList.remove('is-open');
+        codeModal.setAttribute('aria-hidden', 'true');
+      }
+
+      openCodeModalBtn?.addEventListener('click', openCodeModal);
+      closeCodeModalBtn?.addEventListener('click', closeCodeModal);
+
+      codeModal?.addEventListener('click', function (event) {
+        if (event.target === codeModal) closeCodeModal();
+      });
+
+      activateCodeBtn?.addEventListener('click', function () {
+        const ok = window.FitAIAuth.activateCode((accessCodeInput?.value || '').trim());
+        if (ok) closeCodeModal();
+      });
+
+      accessCodeInput?.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          activateCodeBtn?.click();
+        }
       });
 
       document.querySelectorAll('[data-plan="free"]').forEach(function (btn) {

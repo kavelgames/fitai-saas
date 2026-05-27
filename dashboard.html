@@ -462,16 +462,14 @@
       document.getElementById('upgradeBtn')?.addEventListener('click', function () {
         const profile = loadUserProfile();
         initPaymentCheckout(profile);
-        window.FitAIAuth.makePayment();
-        applyPremiumUI();
-        alert('Оплата прошла успешно. Вам открыт полный доступ к dashboard.');
+        window.FitAIAuth.initiatePayment();
       });
 
       document.getElementById('togglePremium')?.addEventListener('click', function () {
         if (window.FitAIAuth.isPremium()) {
           window.FitAIAuth.setFreePlan();
         } else {
-          window.FitAIAuth.makePayment();
+          window.FitAIAuth.initiatePayment();
         }
         applyPremiumUI();
       });

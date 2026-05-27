@@ -1,7 +1,7 @@
 (function () {
   var HAS_PAID_KEY = "hasPaid";
   var PREMIUM_KEY = "fitai_premium";
-  var PAYMENT_URL = "https://yandex.ru";
+  var PAYMENT_URL = "ТВОЯ_ССЫЛКА_ЮMONEY";
 
   function hasPaid() {
     return localStorage.getItem(HAS_PAID_KEY) === "true";
@@ -29,9 +29,9 @@
     });
   }
 
-  function showToast(message) {
+  function showToast(message, type) {
     var toast = document.createElement("div");
-    toast.className = "toast toast--success";
+    toast.className = "toast " + (type === "error" ? "toast--error" : "toast--success");
     toast.textContent = message;
     document.body.appendChild(toast);
 
@@ -52,22 +52,44 @@
     localStorage.setItem(PREMIUM_KEY, "true");
     updateStatusBadge();
     updatePremiumVisibility();
-    showToast("Оплата прошла успешно!");
+    showToast("Оплата прошла успешно!", "success");
+  }
+
+  function activateCode(code) {
+    if (code === "FITAI2026") {
+      localStorage.setItem(HAS_PAID_KEY, "true");
+      localStorage.setItem(PREMIUM_KEY, "true");
+      updateStatusBadge();
+      updatePremiumVisibility();
+      showToast("Успешно! Доступ открыт", "success");
+      setTimeout(function () {
+        window.location.href = "dashboard.html";
+      }, 450);
+      return true;
+    }
+    showToast("Неверный код", "error");
+    return false;
   }
 
   function handlePaymentSuccessFromUrl() {
     var params = new URLSearchParams(window.location.search);
-    if (params.get("success") !== "true") return false;
+    var isSuccess = params.get("success") === "true" || params.get("status") === "success";
+    if (!isSuccess) return false;
     completePaymentSuccess();
     params.delete("success");
+    params.delete("status");
     var nextQuery = params.toString();
     var cleanUrl = window.location.pathname + (nextQuery ? "?" + nextQuery : "") + window.location.hash;
     window.history.replaceState({}, "", cleanUrl);
     return true;
   }
 
+  function initiatePayment() {
+    window.open(PAYMENT_URL, "_blank", "noopener,noreferrer");
+  }
+
   function makePayment() {
-    window.location.href = PAYMENT_URL;
+    initiatePayment();
   }
 
   function setFreePlan() {
@@ -80,7 +102,7 @@
   function protectDashboard() {
     if (handlePaymentSuccessFromUrl()) return;
     if (window.location.pathname.toLowerCase().endsWith("/dashboard.html") && !hasPaid()) {
-      window.location.href = "index.html#pricing";
+      window.location.href = "index.html?paywall=required#pricing";
     }
   }
 
@@ -91,7 +113,9 @@
     updatePremiumVisibility: updatePremiumVisibility,
     showToast: showToast,
     completePaymentSuccess: completePaymentSuccess,
+    activateCode: activateCode,
     handlePaymentSuccessFromUrl: handlePaymentSuccessFromUrl,
+    initiatePayment: initiatePayment,
     makePayment: makePayment,
     setFreePlan: setFreePlan,
     protectDashboard: protectDashboard
